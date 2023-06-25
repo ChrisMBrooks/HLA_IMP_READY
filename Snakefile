@@ -1,3 +1,8 @@
+# snakemake --cores 8 --use-conda --conda-frontend conda --rerun-incomplete --until "extract_list_of_sample_ids"
+# snakemake --cores 8 --use-conda --conda-frontend conda --rerun-incomplete
+
+#--printshellcmds
+
 import json, os, sys
 def load_pipeline_config():
     try:
@@ -43,7 +48,4 @@ include: "Rules/get_snp_ref_panel.smk"
 include: "Rules/convert_vcf_to_hap_samp.smk"
 include: "Rules/move_hap.smk"
 include: "Rules/move_samp.smk"
-
-# snakemake --cores 8 --until "extract_list_of_sample_ids" --rerun-incomplete --use-conda
-# snakemake --cores 8 --rerun-incomplete --use-conda
 

@@ -81,7 +81,7 @@ else:
             script = "Scripts/LiftOver/convert_ucsc_bed_to_map.py",
             lifted_bed = "Output/{project}/LiftOver/Postprocess/{filename}.hg19.ucsc_bed"
         output:
-            lifted_map = "Output/{project}/LiftOver/Postprocess/BedToMap/{filename}.hg19.map"
+            lifted_map = "Output/{project}/LiftOver/Postprocess/Staging/{filename}.hg19.map"
         conda: "../../Envs/python_env.yaml"
         shell:
             """
@@ -114,15 +114,15 @@ else:
             lifted_snp_list = "Output/{project}/LiftOver/Postprocess/hg19_lifted_snp_list.txt"
         params:
             bed_prefix = "{fp_filename}".format(fp_filename=FULL_PATH_FILENAME),
-            output_prefix = "Output/{project}/LiftOver/Postprocess/{filename}.subset"
+            output_prefix = "Output/{project}/LiftOver/Postprocess/Subset/{filename}.subset"
         output:
-            bim = "Output/{project}/LiftOver/Postprocess/{filename}.subset.bim",
-            bed = "Output/{project}/LiftOver/Postprocess/{filename}.subset.bam",
-            fam = "Output/{project}/LiftOver/Postprocess/{filename}.subset.fam"
+            bim = "Output/{project}/LiftOver/Postprocess/Subset/{filename}.subset.bim",
+            bed = "Output/{project}/LiftOver/Postprocess/Subset/{filename}.subset.bed",
+            fam = "Output/{project}/LiftOver/Postprocess/Subset/{filename}.subset.fam"
         conda: "../../Envs/plink_env.yaml"
         shell:
             """
-                # plink --bfile {params.bed_prefix} \
+                plink --bfile {params.bed_prefix} \
                 --extract {input.lifted_snp_list} \
                 --make-bed \
                 --out {params.output_prefix}
@@ -130,33 +130,34 @@ else:
 
     rule convert_bed_to_map_subset:
         input:
-            bim = "Output/{project}/LiftOver/Postprocess/{filename}.subset.bim",
-            bed = "Output/{project}/LiftOver/Postprocess/{filename}.subset.bam",
-            fam = "Output/{project}/LiftOver/Postprocess/{filename}.subset.fam"
+            bim = "Output/{project}/LiftOver/Postprocess/Subset/{filename}.subset.bim",
+            bed = "Output/{project}/LiftOver/Postprocess/Subset/{filename}.subset.bed",
+            fam = "Output/{project}/LiftOver/Postprocess/Subset/{filename}.subset.fam"
         params:
-            bed_prefix = "Output/{project}/LiftOver/Postprocess/{filename}.subset"
+            bed_prefix = "Output/{project}/LiftOver/Postprocess/Subset/{filename}.subset",
+            map_prefix = "Output/{project}/LiftOver/Postprocess/Subset/{filename}.subset"
         output:
-            map_file = "Output/{project}/LiftOver/Postprocess/BedToMap/Subset/{filename}.subset.map",
-            ped_file = "Output/{project}/LiftOver/Postprocess/BedToMap/Subset/{filename}.subset.ped"
+            map_file = "Output/{project}/LiftOver/Postprocess/Subset/{filename}.subset.map",
+            ped_file = "Output/{project}/LiftOver/Postprocess/Subset/{filename}.subset.ped"
         conda: "../../Envs/plink_env.yaml"
         shell:
             """
-                plink --bfile $TEMP_DIR/twins.subset --recode --tab --out $TEMP_DIR/twins.hg19.subset
+                plink --bfile {params.bed_prefix} \
+                --recode --tab \
+                --out {params.map_prefix}
             """
 
     rule replace_map:
         input:
-            unlifted_map_file = "Output/{project}/LiftOver/Postprocess/BedToMap/Subset/{filename}.subset.map",
-            unlifted_ped_file = "Output/{project}/LiftOver/Postprocess/BedToMap/Subset/{filename}.subset.ped",
-            lifted_map_file = "Output/{project}/LiftOver/Postprocess/BedToMap/{filename}.hg19.map",
-        output:
+            unlifted_map_file = "Output/{project}/LiftOver/Postprocess/Subset/{filename}.subset.map",
+            unlifted_ped_file = "Output/{project}/LiftOver/Postprocess/Subset/{filename}.subset.ped",
             lifted_map_file = "Output/{project}/LiftOver/Postprocess/Staging/{filename}.hg19.map",
+        output:
             lifted_ped_file = "Output/{project}/LiftOver/Postprocess/Staging/{filename}.hg19.ped"
         shell:
             """
                 rm {input.unlifted_map_file}
                 mv {input.unlifted_ped_file} {output.lifted_ped_file}
-                mv {input.lifted_map_file} {output.lifted_map_file}
             """
 
     rule convert_map_to_bed:
@@ -164,7 +165,8 @@ else:
             lifted_map_file = "Output/{project}/LiftOver/Postprocess/Staging/{filename}.hg19.map",
             lifted_ped_file = "Output/{project}/LiftOver/Postprocess/Staging/{filename}.hg19.ped"
         params:
-            map_prefix = "Output/{project}/LiftOver/{filename}.hg19"
+            map_prefix = "Output/{project}/LiftOver/Postprocess/Staging/{filename}.hg19",
+            bed_prefix = "Output/{project}/LiftOver/Results/{filename}.hg19"
         output:
             bim = "Output/{project}/LiftOver/Results/{filename}.hg19.bim",
             bed = "Output/{project}/LiftOver/Results/{filename}.hg19.bed",
@@ -175,5 +177,5 @@ else:
                 plink --file {params.map_prefix} \
                 --make-bed \
                 --tab \
-                --out {params.map_prefix}
+                --out {params.bed_prefix}
             """

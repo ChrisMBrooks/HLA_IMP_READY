@@ -87,6 +87,9 @@ def main():
         data=config['params']
     )
 
+    print(message)
+    print(job_id)
+
     export_results(
         message=message, 
         job_id=job_id, 
