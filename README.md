@@ -22,7 +22,7 @@ To download and configure the pipeline, run the following command:
     cd HLA_IMP_READY
 ```
 
-Next, navigate to the [Michigan Imputation Service](https://imputationserver.sph.umich.edu/index.html#!pages/profile) to obtain your API-KEY (you will need to register and create an account.). Under API access click create and copy the ``API-Token.`` Add the ``API-Token`` into the ``example.pipeline.config.json`` file, e.g.:
+Next, navigate to the [Michigan Imputation Service](https://imputationserver.sph.umich.edu/index.html#!pages/profile) to obtain your API-KEY (you will need to register and create an account.). Under API access click create and copy the ``API-Token``. Add the ``API-Token`` into the ``example.pipeline.config.json`` file, e.g.:
 
 ```json
     "mich_imp_config":{
@@ -48,8 +48,8 @@ conda create -f Envs/snakemake_env.yml
 
 # Input
 Two main input files must be configured or be made available before the pipeline can be run: 
-* ``pipeline.config.json``
-* ``.bed / .bim / .fam files``
+* ``pipeline.config.json`` configuration files
+* ``.bed / .bim / .fam`` SNP geneotype files
 
 ## Pipeline Config JSON
 
@@ -66,9 +66,9 @@ The ``pipeline.config.json`` file is a simple high level JSON file containing co
 * ``phasing_results_loc`` is the filepath location to the ``chr6.dose.vcf.gz`` files to be extracted from the Michigan Imputation Service. This is discussed in detail in the Run Section. The text should include the path, filename and extension, e.g.: ``Input/chr_6/chr6.dose.vcf.gz``.
 
 # Run
-Because the Michigan Imputation Service does not support API download. The snakemake pipeline must be run in two parts:
+The Michigan Imputation Service does not easily support API download, so the snakemake pipeline must be run in two parts:
 
-## Part I
+## Part Ia
 
 Activate the snakemake conda environment, ``snakemake_env`` and then run the following command:  
 
@@ -77,9 +77,19 @@ snakemake --cores 8 --use-conda --conda-frontend conda --until "submit_vcf_to_mi
 ```
  > NB - The imputation service can take several hours to complete. You will receive an automated email from the Michigan Imputation Service once your job(s) have completed. 
 
+## Part Ib
+Once you have received the automated email, navigate to the [Michigan Imputation Service Job Page](https://imputationserver.sph.umich.edu/index.html#!pages/jobs) and download the result. Use the password provided in the automated email to unlock the results from the downloaded ``.zip`` file. Then revise the ``pipeline.config.json`` to ensure the ``phasing_results_loc`` attribute points to this location. 
+
+```sh
+curl -sL https://imputationserver.sph.umich.edu/get/3552641/ea531f1b5bac70b68d21aad4db171d071eb145581cbeacbf067421a49cb4306a | bash
+unzip -P INSERT-MIS-PROVIDED-PASSWORD chr_6.zip
+```
+
+> NB - From the extracted results, ensure the ``chr6.dose.vcf.gz`` file is palced in the ``Input/chr_6/ directory``, or edit the ``phasing_results_loc`` entry in the ``pipeline.config.json`` file. 
+
 ## Part II 
 
-Once you have received the automated email, navigate to the [Michigan Imputation Service Job Page](https://imputationserver.sph.umich.edu/index.html#!pages/jobs) and download the result. Use the password provided in the automated email to unlock the results from the downloaded ``.zip`` file. Then revise the ``pipeline.config.json`` to ensure the ``phasing_results_loc`` attribute points to this location. Finally, run the remainder of the snakemake pipeline as follows: 
+Once the ``chr6.dose.vcf.gz`` is in place, run the remainder of the snakemake pipeline as follows: 
 
 ```sh
 snakemake --cores 8 --use-conda --conda-frontend conda --keep-going  --rerun-incomplete
@@ -87,5 +97,13 @@ snakemake --cores 8 --use-conda --conda-frontend conda --keep-going  --rerun-inc
 
 # Output
 
-SOMETHING, SOMETHING, SOMETHING
+The phased Hap/Samp files for each of N partitions are output into the ``Output/Liechti2023/HLA_IMP_READY``, e.g.:
 
+* datafile.chr6.20to40.chr6.20_to_40mb.dose.1.hap.gz 
+* datafile.chr6.20to40.chr6.20_to_40mb.dose.1.sample
+* datafile.chr6.20to40.chr6.20_to_40mb.dose.2.hap.gz 
+* datafile.chr6.20to40.chr6.20_to_40mb.dose.2.sample
+
+# Afterward
+
+To obtain imputation results, individually upload each of the Hap/Sam pairs to the [HLA*IMP3 Jobs Page](https://imp.science.unimelb.edu.au/hla/jobs). You will need to register and create an account. You will need to provide which of the SNP array and manufacturer were used to generate the ``.bed / .bim / .fam`` input files, e.g. HumanOmni5-4 v1.1. Upon completion of the HLA imputation you will receive a confirmation email and ``acces key``. Results can be downloaded from the same Jobs Page. 
