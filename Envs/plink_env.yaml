@@ -5,3 +5,4 @@ channels:
   - defaults
 dependencies:
   - plink=1.90b6.21 
+  - bcftools=1.9

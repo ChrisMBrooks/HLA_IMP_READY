@@ -17,6 +17,19 @@
             "r2Filter":0   
         }
     },
+    "mich_imp2_config":{
+        "url":"https://imputationserver.sph.umich.edu/api/v2",
+        "endpoint_suffix":"jobs/submit/imputationserver2",
+        "auth_token":"MY-API-TOKEN",
+        "params":{
+            "mode": "imputation", 
+            "refpanel": "1000g-phase-3-v5",
+            "phasing":"eagle",
+            "population": "eur",
+            "build":"hg19",
+            "r2Filter":0
+        }   
+    },
     "snp_ref_panel_url":"https://imp.science.unimelb.edu.au/hla/static/hlaimp3.all.snps.txt",
     "lift_over_config":{
         "ucsc_ref_map_urls": {
@@ -25,6 +38,11 @@
                 "hg17_to_hg19" : "https://hgdownload.soe.ucsc.edu/goldenPath/hg17/liftOver/hg17ToHg19.over.chain.gz",
                 "hg16_to_hg19" : "https://hgdownload.soe.ucsc.edu/goldenPath/hg16/liftOver/hg16ToHg19.over.chain.gz"
         }
+    },
+    "freq_encode_snps_config":{
+        "panel_chromosome": 6,
+        "min_ambigious_threshold": 0.495,
+        "max_ambigious_threshold": 0.505,
+        "outlier_threshold":0.1
     }
-
 }

@@ -22,6 +22,12 @@ To download and configure the pipeline, run the following command:
     cd HLA_IMP_READY
 ```
 
+Then, rename ``example.pipeline.config.json`` to ``pipeline.config.json``, vis-a-vis:
+
+```sh
+    mv example.pipeline.config.json pipeline.config.json
+```
+
 Next, navigate to the [Michigan Imputation Service](https://imputationserver.sph.umich.edu/index.html#!pages/profile) to obtain your API-KEY (you will need to register and create an account.). Under API access click create and copy the ``API-Token``. Add the ``API-Token`` into the ``example.pipeline.config.json`` file, e.g.:
 
 ```json
@@ -66,7 +72,7 @@ The ``pipeline.config.json`` file is a simple high level JSON file containing co
 * ``phasing_results_loc`` is the filepath location to the ``chr6.dose.vcf.gz`` files to be extracted from the Michigan Imputation Service. This is discussed in detail in the Run Section. The text should include the path, filename and extension, e.g.: ``Input/chr_6/chr6.dose.vcf.gz``.
 
 # Run
-The Michigan Imputation Service does not easily support API download, so the snakemake pipeline must be run in two parts:
+The Michigan Imputation Service does not easily support API download, so the HLA_IMP_READY snakemake pipeline must be run in two parts:
 
 ## Part Ia
 

@@ -4,9 +4,9 @@
 #--printshellcmds
 
 import json, os, sys
-def load_pipeline_config():
+def load_pipeline_config(config_filename:str):
     try:
-        full_path = os.path.join(os.getcwd(), "pipeline.config.json")
+        full_path = os.path.join(os.getcwd(), config_filename)
         f = open(full_path)
         config = json.load(f)
         return config
@@ -14,7 +14,9 @@ def load_pipeline_config():
         print('Failed to load pipeline config. Exiting...')
         sys.exit(1)
 
-CONFIG = load_pipeline_config()
+CONFIG_FILENAME = "pipeline.config.json"
+CONFIG = load_pipeline_config(config_filename=CONFIG_FILENAME)
+FES_CONFIG = CONFIG["freq_encode_snps_config"]
 PROJECT = CONFIG["project"]
 FULL_PATH_FILENAME = CONFIG["bed_bim_fam_filename"]
 FILENAME = os.path.basename(CONFIG["bed_bim_fam_filename"])
@@ -39,7 +41,7 @@ rule hla_imp_ready:
 
 include: "Rules/LiftOver/conditional_lifover.smk"
 include: "Rules/extract_hla_loci_convert_to_vcf.smk"
-include: "Rules/compress_and_index_vcf.smk"
+include: "Rules/frequency_encode_snps.smk"
 include: "Rules/submit_vcf_to_mis.smk"
 include: "Rules/extract_list_of_sample_ids.smk"
 include: "Rules/split_sample_ids_file.smk"
