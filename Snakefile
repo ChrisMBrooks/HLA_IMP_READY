@@ -3,6 +3,8 @@
 
 #--printshellcmds
 
+# snakemake --rulegraph | dot -Tpng > Docs/rule-graph.png
+
 import json, os, sys
 def load_pipeline_config(config_filename:str):
     try:
@@ -40,9 +42,15 @@ rule hla_imp_ready:
         )
 
 include: "Rules/LiftOver/conditional_lifover.smk"
-include: "Rules/extract_hla_loci_convert_to_vcf.smk"
-include: "Rules/frequency_encode_snps.smk"
+include: "Rules/extract_hla_loci.smk"
+include: "Rules/get_imp_precheck_ref_data.smk"
+include: "Rules/get_imp_precheck_script.smk"
+include: "Rules/calc_bed_frequencies.smk"
+include: "Rules/run_imp_precheck.smk"
+include: "Rules/run_imp_precheck_fixes.smk"
+
 include: "Rules/submit_vcf_to_mis.smk"
+
 include: "Rules/extract_list_of_sample_ids.smk"
 include: "Rules/split_sample_ids_file.smk"
 include: "Rules/partition_vcf_file.smk"

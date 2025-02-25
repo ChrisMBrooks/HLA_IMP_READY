@@ -1,7 +1,7 @@
 rule extract_list_of_sample_ids:
     input:
-        mis_sub_results = "Output/{project}/VCF/{filename}.chr6.20_to_40mb.ac.encoded.vcf.gz.submission_results.csv",
-        vcfgz = "Output/{project}/VCF/{filename}.chr6.20_to_40mb.ac.encoded.vcf.gz"
+        mis_sub_results = "Output/{project}/VCF/{filename}.hg19.chr6.20_to_40mb.encoded.vcf.gz.submission_results.csv",
+        vcfgz = "Output/{project}/VCF/{filename}.hg19.chr6.20_to_40mb.encoded.vcf.gz"
     params:
         phased_vcf = "{phase_results_filename}".format(phase_results_filename=PHASING_RESULTS)
     output:

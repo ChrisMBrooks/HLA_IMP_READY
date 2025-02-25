@@ -1,0 +1,7 @@
+name: perl_env
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - perl=5.32.1

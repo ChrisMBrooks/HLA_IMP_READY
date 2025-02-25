@@ -28,28 +28,28 @@ Then, rename ``example.pipeline.config.json`` to ``pipeline.config.json``, vis-a
     mv example.pipeline.config.json pipeline.config.json
 ```
 
-Next, navigate to the [Michigan Imputation Service](https://imputationserver.sph.umich.edu/index.html#!pages/profile) to obtain your API-KEY (you will need to register and create an account.). Under API access click create and copy the ``API-Token``. Add the ``API-Token`` into the ``example.pipeline.config.json`` file, e.g.:
+Next, navigate to the [Michigan Imputation Service v2](https://imputationserver.sph.umich.edu/#!pages/profile) to obtain your API-KEY (you will need to register and create an account.). Under API access click create and copy the ``API-Token``. Add the ``API-Token`` into the ``example.pipeline.config.json`` file, e.g.:
 
 ```json
-    "mich_imp_config":{
+    "mich_imp2_config":{
         "url":"https://imputationserver.sph.umich.edu/api/v2",
-        "endpoint_suffix":"jobs/submit/minimac4",
-        "auth_token":"!!!!!!!!!!!!!!!-PASTE-THE-API-TOKEN-HERE-!!!!!!!!!!!!!!!",
+        "endpoint_suffix":"jobs/submit/imputationserver2",
+        "auth_token":"MY-API-TOKEN",
         "params":{
             "mode": "imputation", 
             "refpanel": "1000g-phase-3-v5",
             "phasing":"eagle",
             "population": "eur",
             "build":"hg19",
-            "r2Filter":0   
-        }
+            "r2Filter":0
+        }   
     }
 ```
 
-Finally, create a conda environment using the provided ``Envs/snakemake_env.yml`` environment file: 
+Finally, create a conda environment using the provided ``Envs/snakemake_v7_env.yml`` environment file: 
 
 ```sh
-conda create -f Envs/snakemake_env.yml
+conda create -f Envs/snakemake_v7_env.yml
 ```
 
 # Input
@@ -103,7 +103,7 @@ snakemake --cores 8 --use-conda --conda-frontend conda --keep-going  --rerun-inc
 
 # Output
 
-The phased Hap/Samp files for each of N partitions are output into the ``Output/Liechti2023/HLA_IMP_READY``, e.g.:
+The phased Hap/Samp files for each of N partitions are output into the ``HLA_IMP_READY`` subfolder, e.g.:
 
 * datafile.chr6.20to40.chr6.20_to_40mb.dose.1.hap.gz 
 * datafile.chr6.20to40.chr6.20_to_40mb.dose.1.sample

@@ -1,7 +1,7 @@
 rule convert_vcf_to_hap_samp:
     input:
         phased_vcfgz = "Output/{project}/VCF/{filename}.chr6.20_to_40mb.dose.{partition_id}.vcf.gz",
-        snps_reference = "Output/{project}/MetaData/hlaimp3.all.snps.txt"
+        snps_reference = "Output/RefData/hlaimp3.all.snps.txt"
     params:
         vcf_prefix = "Output/{project}/VCF/{filename}.chr6.20_to_40mb.dose.{partition_id}",
         hap_samp_prefix = "Output/{project}/HLA_IMP_READY/{filename}.chr6.20_to_40mb.dose.{partition_id}"
